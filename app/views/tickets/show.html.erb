@@ -1,0 +1,57 @@
+<table class="table table-hover table-bordered">
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Department</th>
+    <th>Subject</th>
+    <th>Creation Date</th>
+    <th>Status</th>
+    <th colspan = 3>Actions</th>
+  </tr>
+  <% if @t.status %>
+  <tr class = "success">
+    <% finished = true %>
+  <% else %>
+  <tr>
+      <% finished = false %>
+  <% end %>
+      <td><%= @t.created_by %></td>
+      <td>
+        <%= mail_to @t.created_by_email do %>
+        <%= truncate(@t.created_by_email, length: 20) %>
+        <% end %>
+      </td>
+      <td><%= @t.department.capitalize %></td>
+      <td>
+        <strong><%= @t.title %></strong> <br>
+        <%= @t.body %></td>
+          <td><%= time_ago_in_words(@t.created_at) %> ago</td>
+
+
+      <td>
+        <% if finished %>
+            <%= "Done!" %>
+        <% else %>
+            <%= "Not Done" %>
+          <% end %>
+
+      </td>
+
+        <% if finished %>
+        <td class = "success">
+          <%= link_to 'Not Done?', done_path(@t.id), method: :patch %>
+        <% else %>
+          <td>
+          <%= link_to 'Done?', done_path(@t.id), method: :patch %>
+        <% end %>
+      </td>
+      <td><%= link_to "Edit", edit_path(@t) %></td>
+      <td>
+        <%= link_to 'Delete', ticket_path(@t),
+              method: :delete,
+              data: { confirm: "Are you sure you want to delete record number #{@t.id}?" },
+              class: "btn btn-danger" %>
+      </td>
+    </tr>
+    </tr>
+</table>

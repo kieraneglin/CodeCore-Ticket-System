@@ -1,0 +1,64 @@
+<h1 class="text-center">Search Results</h1>
+<table class="table table-hover table-bordered">
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Department</th>
+    <th>Subject</th>
+    <th>Creation Date</th>
+    <th>Status</th>
+    <th 3 colspan=>Actions</th>
+  </tr>
+
+  <% @t.each do |ticket| %>
+  <% if ticket.status %>
+  <tr class="success">
+    <% finished = true %>
+    <% else %>
+    <tr>
+      <% finished = false %>
+      <% end %>
+      <td><%= ticket.created_by %></td>
+      <td>
+        <%= mail_to ticket.created_by_email do %>
+        <%= truncate(ticket.created_by_email, length: 20) %>
+        <% end %>
+      </td>
+      <td><%= ticket.department.capitalize %></td>
+      <td>
+        <strong><%= link_to ticket.title, show_path(ticket) %></strong>
+        <br>
+        <%= truncate(ticket.body, length:50) %></td>
+      <td><%= time_ago_in_words(ticket.created_at) %>
+        ago</td>
+
+      <td>
+        <% if finished %>
+        <%= "Done!" %>
+        <% else %>
+        <%= "Not Done" %>
+        <% end %>
+
+      </td>
+          <% if finished %>
+            <td class="success">
+            <%= link_to 'Not Done?', done_path(ticket.id), method: :patch %>
+          <% else %>
+            <td>
+            <%= link_to 'Done?', done_path(ticket.id), method: :patch %>
+          <% end %>
+        </td>
+        <td><%= link_to "Edit", edit_path(ticket) %></td>
+        <td>
+          <%= link_to 'Delete', ticket_path(ticket),
+              method: :delete,
+              data: { confirm: "Are you sure you want to delete record number #{ticket.id}?" },
+              class: "btn btn-danger" %>
+        </td>
+      </tr>
+    </tr>
+    <% end %>
+  </table>
+  <div class="text-center">
+    <%= paginate @t %>
+  </div>
